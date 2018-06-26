@@ -375,7 +375,7 @@ class EEPCMD:
         
         return version, photo_sys, abun, rot, minit, Av_extinction, hdr_list, eepcmds
         		
-    def plot_CMD(self, filters, fignum=0, phases=[], phasecolor=[], **kwargs):
+    def plot_CMD(self, filters, fignum=0, figsize=(8,6), phases=[], phasecolor=[], **kwargs):
         
         """
 
@@ -411,13 +411,15 @@ class EEPCMD:
             print(filters[2]) + ' does not appear in this file.'
             return
         
-        fig = plt.figure(fignum)
+        fig = plt.figure(fignum, figsize=figsize)
         plt.xlabel(' '.join(filters[0].split('_')) + '-' + ' '.join(filters[1].split('_')), fontsize=22)
         plt.ylabel(' '.join(filters[2].split('_')), fontsize=22)
         
         ax = fig.add_subplot(111)
         ax.plot(x1-x2, y, **kwargs)
         ax.axis([min(x1-x2)-0.2, max(x1-x2)+0.2, max(y)+0.2, min(y)-0.2])
+
+        ax.minorticks_on()
 
         if len(phases) >= 0:
             if len(phases) != len(phasecolor):
@@ -431,5 +433,4 @@ class EEPCMD:
                         ax.plot(x1[p_ind]-x2[p_ind], y[p_ind], linewidth=4.0, alpha=0.5)
                     else:
                         ax.plot(x1[p_ind]-x2[p_ind], y[p_ind], color=phasecolor[i_p], linewidth=4.0, alpha=0.5)
-
         
