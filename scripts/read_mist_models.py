@@ -375,7 +375,7 @@ class EEPCMD:
         
         return version, photo_sys, abun, rot, minit, Av_extinction, hdr_list, eepcmds
         		
-    def plot_CMD(self, filters, fignum=0, figsize=(8,6), phases=[], phasecolor=[], **kwargs):
+    def plot_CMD(self, filters, fignum=0, figsize=(8,6), upper_age=None, phases=[], phasecolor=[], **kwargs):
         
         """
 
@@ -394,19 +394,23 @@ class EEPCMD:
         Usage:
             >> eepcmd.plot_CMD(['Bessell_B', 'Bessell_V', 'Bessell_V'], fignum=3)
         """
+        if upper_age is not None:
+            age_mask = (self.eepcmds['star_age'] >= 0) & (self.eepcmds['star_age'] <= upper_age)
+        else:
+            age_mask = (self.eepcmds['star_age'] >= 0)
         
         try:
-            x1 = self.eepcmds[filters[0]]
+            x1 = self.eepcmds[filters[0]][age_mask]
         except:
             print(filters[0]) + ' does not appear in this file.'
             return
         try:
-            x2 = self.eepcmds[filters[1]]
+            x2 = self.eepcmds[filters[1]][age_mask]
         except:
             print(filters[1]) + ' does not appear in this file.'
             return
         try:
-            y = self.eepcmds[filters[2]]
+            y = self.eepcmds[filters[2]][age_mask]
         except:
             print(filters[2]) + ' does not appear in this file.'
             return
@@ -426,7 +430,7 @@ class EEPCMD:
                 print('The length of the phase and phasecolor array must be identical.')
                 return
             for i_p, phase in enumerate(phases):
-                p = self.eepcmds['phase']
+                p = self.eepcmds['phase'][age_mask]
                 p_ind = np.where(p == phase)
                 if len(p_ind) > 0:
                     if phasecolor == '':
